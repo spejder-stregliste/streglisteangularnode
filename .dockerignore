@@ -1,0 +1,11 @@
+README.md
+**/Dockerfile*
+**/.git
+**/.gitignore
+**/node_modules
+**/.dockerignore
+.vscode
+extensions.json
+launch.json
+tasks.json
+.editorconfig
