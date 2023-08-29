@@ -21,7 +21,7 @@ RUN npm install @angular-devkit/build-angular
 RUN npm install
 
 # build web
-RUN ng build --output-path="../dist/web"
+RUN ng build --output-path="../dist/web" --base-href /
 
 
 
@@ -53,7 +53,7 @@ RUN npm install
 WORKDIR /app/dist
 
 # we default to port 4000, somewhat arbitrary
-EXPOSE 4000
+EXPOSE 8080
 
 # start the express server
 CMD ["node", "index.js"]
