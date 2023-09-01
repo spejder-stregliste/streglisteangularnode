@@ -22,8 +22,8 @@ docker desktop for windows
 `ng serve` in `./web`
 
 #### Express
-`docker build . -t stregliste:latest` in `root`
-`docker run -detached -p 4000:4000 stregliste:latest`
+ - `docker build . -t stregliste:latest` in `root`
+ - `docker run -detached -p 4000:4000 stregliste:latest` in `root`
 
 ### Deployment
 Using docker. Run "deploy.cmd" in root of project.
