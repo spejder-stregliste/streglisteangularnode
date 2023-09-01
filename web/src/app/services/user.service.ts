@@ -14,8 +14,8 @@ export class UserService {
 
         /* use for local development */
         /*this.users = new Observable(s => {
-                s.next([new User("jonas", 2), new User("Johan", 40), new User("jonas", 2), new User("Johan", 10), new User("jonas", 2), new User("Johan", 10), new User("jonas", 2), new User("Johan", 10), new User("jonas", 2), new User("Johan", 10)]);
-            });/**/
+            s.next([new User("jonas", 2), new User("Johan", 40), new User("jonas", 2), new User("Johan", 10), new User("jonas", 2), new User("Johan", 10), new User("jonas", 2), new User("Johan", 10), new User("jonas", 2), new User("Johan", 10)]);
+        });/**/
     }
 
     async updateAll(): Promise<User[] | undefined> {
@@ -23,10 +23,12 @@ export class UserService {
     }
 
     async updateUser(user: User): Promise<User | undefined> {
+        user.lines = parseInt(user.lines?.toString() || "0");
         return this.http.put<User>(this.baseurl + 'user', user).toPromise();
     }
 
     async addUser(user: User): Promise<User | undefined> {
+        user.lines = parseInt(user.lines?.toString() || "0");
         return this.http.post<User>(this.baseurl + 'user', user).toPromise();
     }
 }

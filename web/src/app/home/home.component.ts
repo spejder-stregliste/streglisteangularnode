@@ -1,6 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { User, UserService } from '../services/user.service';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogComponent } from '../dialog/dialog.component';
 
 @Component({
   selector: 'app-home',
@@ -14,7 +16,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   newUser: string = "";
   private $dataSource: Subscription | undefined;
 
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService, public dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.$dataSource = this.userService.users.subscribe(r => {
@@ -39,7 +41,9 @@ export class HomeComponent implements OnInit, OnDestroy {
       user.lines = res?.lines;
       user.editing = false;
       if (res?.lines !== undefined && res?.lines >= 40) {
-        window.alert("Betal din regning din bums!")
+        this.dialog.open(DialogComponent, {
+          data: {name: user.name},
+        });
       }
     }, () => {
       window.alert("Kan ikke gemme");

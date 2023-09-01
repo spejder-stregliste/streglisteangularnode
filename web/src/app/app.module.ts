@@ -1,23 +1,30 @@
+// angular imports
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
-import { AppComponent } from './app.component';
-import { HomeComponent } from './home/home.component';
-import { UserService } from './services/user.service';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
-import { QRComponent } from './qr/qr.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+
+// components
+import { AppComponent } from './app.component';
+import { HomeComponent } from './home/home.component';
+import { QRComponent } from './qr/qr.component';
+
+// services
+import { UserService } from './services/user.service';
+import { DialogComponent } from './dialog/dialog.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
-    QRComponent
+    QRComponent,
+    DialogComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -26,6 +33,7 @@ import { RouterModule } from '@angular/router';
     MatButtonModule,
     MatInputModule,
     MatIconModule,
+    MatDialogModule,
     FormsModule,
     BrowserModule,
     RouterModule.forRoot([
