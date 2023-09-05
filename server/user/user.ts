@@ -1,6 +1,4 @@
-import { Firestore } from "@google-cloud/firestore";
-
-const db = new Firestore({ projectId: "sukkeregern-stregliste-277311" });
+import { db } from "../db";
 
 export async function getUsers(): Promise<User[]> {
     const res = await db.collection("users").get();
