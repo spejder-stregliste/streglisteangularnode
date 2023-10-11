@@ -59,22 +59,21 @@ FROM node:alpine as final
 ENV NODE_ENV=production
 
 # get the outputs from server build
-COPY --from=build-server /app/dist/ /app/dist
+COPY --from=build-server /app/dist/ /app/
 
 # get the outputs from the web build
 COPY --from=build-web /web/dist/ /app/web
 
 # copy .env
-WORKDIR /app/dist
-COPY ./server/.env /app/dist
+WORKDIR /app
+COPY ./server/.env /app/
 
 # create non root user
-RUN deluser --remove-home node \
-  && addgroup -S node -g 999 \
-  && adduser -S -G node -u 999 node
+RUN addgroup --system --gid 1001 nodejs 
+RUN adduser --system --uid 1001 expressjs
 
 # set to non root user
-USER node
+USER expressjs
 
 # we default to port 8080
 EXPOSE 8080
