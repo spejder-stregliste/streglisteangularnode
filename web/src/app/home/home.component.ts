@@ -134,9 +134,9 @@ export class HomeComponent implements OnInit, OnDestroy {
       const isAsc = this.sort!.direction === 'asc';
       switch (this.sort!.active) {
         case 'name':
-          return compare(a.name ?? "", b.name ?? "", isAsc);
+          return compare({first: a.name ?? "", second: a.lines ?? 0}, {first: b.name ?? "", second: b.lines ?? 0}, isAsc);
         case 'lines':
-          return compare(a.lines ?? 0, b.lines ?? 0, isAsc);
+          return compare({first: a.lines ?? 0, second: a.name ?? ""}, {first: b.lines ?? 0, second: b.name ?? ""}, isAsc);
         default:
           return 0;
       }
@@ -151,6 +151,9 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
 
-function compare(a: number | string, b: number | string, isAsc: boolean) {
-  return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+function compare(a: { first: number | string, second: number | string }, b: { first: number | string, second: number | string }, isAsc: boolean) {
+  if (a.first === b.first) {
+    return (a.second < b.second ? -1 : 1) * (isAsc ? 1 : -1);
+  }
+  return (a.first < b.first ? -1 : 1) * (isAsc ? 1 : -1);
 }
