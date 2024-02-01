@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { BehaviorSubject, lastValueFrom } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
     providedIn: 'root'
@@ -10,10 +11,12 @@ export class AdminService {
 
     constructor(private http: HttpClient,
         @Inject('BASE_URL') private baseurl: string) {
-        this.autherized = new BehaviorSubject(false);
-
-        // use for local development
-        /*this.autherized = new BehaviorSubject(true); /**/
+        if (environment.production) {
+            this.autherized = new BehaviorSubject(false);
+        } else {
+            // use for local development
+            this.autherized = new BehaviorSubject(true);
+        }
     }
 
     async autherize(secret: Secret): Promise<boolean> {

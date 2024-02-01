@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { BehaviorSubject, lastValueFrom } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
     providedIn: 'root'
@@ -11,11 +12,14 @@ export class UserService {
     constructor(
         private http: HttpClient,
         @Inject('BASE_URL') private baseurl: string) {
-        this.users = new BehaviorSubject<User[] | undefined>([])
-        this.updateAll().then(() => {/* We do nothing */});
-
-        // use for local development
-        /*this.users = new BehaviorSubject<User[] | undefined>([new User("jonas", 2), new User("Johan", 40), new User("jonas", 2), new User("Johan", 10), new User("jonas", 2), new User("Johan", 10), new User("jonas", 2), new User("Johan", 10), new User("jonas", 2), new User("Johan", 10)]);/**/
+        if (environment.production) {
+            this.users = new BehaviorSubject<User[] | undefined>([])
+            this.updateAll().then(() => {/* We do nothing */ });
+        }
+        else {
+            // use for local development
+            this.users = new BehaviorSubject<User[] | undefined>([new User("Michael", 2), new User("Lars", 13), new User("Jonas", 2), new User("Johan", 40), new User("Leah", 15), new User("Nana", 10), new User("Kaj", 32), new User("Klinge", 5), new User("Oliver", 1), new User("Tove", 0)].sort(compare));
+        }
     }
 
     async updateAll(): Promise<boolean> {
@@ -65,3 +69,8 @@ export class User {
         this.lines = lines;
     }
 }
+
+
+function compare(a: User | undefined, b: User | undefined): number {
+    return (a!.name! < b!.name! ? -1 : 1);
+  }

@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { BehaviorSubject, lastValueFrom } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
     providedIn: 'root'
@@ -10,11 +11,13 @@ export class GlobalService {
 
     constructor(private http: HttpClient,
         @Inject('BASE_URL') private baseurl: string) {
-        this.status = new BehaviorSubject<Status | undefined>({status: "loading"});
-        this.getStatus().then(() => {/* We do nothing */});
-
-        // use for local development
-        /*this.status = new BehaviorSubject<Status | undefined>({status: "up"}) /* */
+        if (environment.production) {
+            this.status = new BehaviorSubject<Status | undefined>({ status: "loading" });
+            this.getStatus().then(() => {/* We do nothing */ });
+        } else {
+            // use for local development
+            this.status = new BehaviorSubject<Status | undefined>({ status: "up" })
+        }
     }
 
     async getStatus(): Promise<boolean> {
@@ -27,7 +30,7 @@ export class GlobalService {
     }
 
     async updateStatus(status: Status): Promise<boolean> {
-        const res = await lastValueFrom(this.http.put<Status>(this.baseurl+ 'status', status), {defaultValue: undefined});
+        const res = await lastValueFrom(this.http.put<Status>(this.baseurl + 'status', status), { defaultValue: undefined });
         if (res) {
             this.status.next(res);
             return true;
