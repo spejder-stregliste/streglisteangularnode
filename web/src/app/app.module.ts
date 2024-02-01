@@ -11,6 +11,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {MatSortModule} from '@angular/material/sort'; 
 
 // components
 import { AppComponent } from './app.component';
@@ -43,6 +44,7 @@ import { AdminComponent } from './admin/admin.component';
     MatSelectModule,
     BrowserAnimationsModule,
     FormsModule,
+    MatSortModule,
     BrowserModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },

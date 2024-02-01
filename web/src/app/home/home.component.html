@@ -7,15 +7,15 @@
 </div>
 
 <div *ngIf="status !== undefined && status.status === 'up'">
-  <table mat-table [dataSource]="users" class="container mat-elevation-z8" style="width: 100%;">
+  <table mat-table [dataSource]="usersSorted" matSort (matSortChange)="setSort($event)" class="container mat-elevation-z8" style="width: 100%;">
 
     <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef><mat-icon>account_circle</mat-icon> </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header="name"><mat-icon>account_circle</mat-icon> </th>
       <td mat-cell *matCellDef="let element" class="name"> {{element.name}} </td>
     </ng-container>
 
     <ng-container matColumnDef="lines">
-      <th mat-header-cell *matHeaderCellDef> <b style="font-size: x-large;">#</b> </th>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header="lines"> <b style="font-size: x-large; cursor: default;">#</b> </th>
       <td mat-cell *matCellDef="let element" class="streger">
         <div *ngIf="!element.editing">
           {{element.lines}}

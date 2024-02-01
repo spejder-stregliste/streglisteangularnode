@@ -4,19 +4,22 @@ import { User, UserService } from '../services/user.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogComponent } from '../dialog/dialog.component';
 import { GlobalService, Status } from '../services/global.service';
+import { Sort } from '@angular/material/sort';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['name', 'lines', 'amount', 'edit'];
   value = 'Clear me';
-  users: User[] = []
-  status: Status | undefined = {status: "loading"};
+  usersSorted: User[] = [];
+  users: User[] = [];
+  status: Status | undefined = { status: "loading" };
   creating: boolean = false;
   newUser: string = "";
+  private sort: Sort | undefined;
   private $dataSource: Subscription | undefined;
   private $statusSource: Subscription | undefined;
 
@@ -27,8 +30,10 @@ export class HomeComponent implements OnInit, OnDestroy {
       next: (r) => {
         if (r) {
           this.users = r;
+          this.sortData();
         } else {
           this.users = [];
+          this.sortData();
           window.alert("Kan ikke hente brugere");
         }
       }, error: () => {
@@ -82,6 +87,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.userService.updateAll().then(() => {
       }, () => {
         this.users = [];
+        this.sortData();
       });
     })
   }
@@ -107,11 +113,44 @@ export class HomeComponent implements OnInit, OnDestroy {
       if (!res) {
         window.Error("Kan ikke oprette bruger");
         this.users = [];
+        this.sortData();
       }
     }, () => {
       window.Error("Kan ikke oprette bruger");
       this.users = [];
+      this.sortData();
     })
     this.newUser = ""
   }
+
+  sortData() {
+    const data = [...this.users];
+    if (!this.sort || !this.sort.active || this.sort.direction === '') {
+      this.usersSorted = data;
+      return;
+    }
+
+    this.usersSorted = data.sort((a, b) => {
+      const isAsc = this.sort!.direction === 'asc';
+      switch (this.sort!.active) {
+        case 'name':
+          return compare(a.name ?? "", b.name ?? "", isAsc);
+        case 'lines':
+          return compare(a.lines ?? 0, b.lines ?? 0, isAsc);
+        default:
+          return 0;
+      }
+    });
+  }
+
+  setSort(sort: Sort) {
+    this.sort = sort;
+    this.sortData();
+  }
+}
+
+
+
+function compare(a: number | string, b: number | string, isAsc: boolean) {
+  return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
 }
