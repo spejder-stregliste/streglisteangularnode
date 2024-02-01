@@ -153,7 +153,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 function compare(a: { first: number | string, second: number | string }, b: { first: number | string, second: number | string }, isAsc: boolean) {
   if (a.first === b.first) {
-    return (a.second < b.second ? -1 : 1) * (isAsc ? 1 : -1);
+    return (a.second < b.second ? -1 : 1);
   }
   return (a.first < b.first ? -1 : 1) * (isAsc ? 1 : -1);
 }
