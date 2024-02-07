@@ -3,17 +3,17 @@ Website for klan sukkeregern stregliste.
 
 ## Tech stack
 ### Backend
-<t>express.js</t> using typescript.
+***Express.js*** using typescript.\
 version: 4.18.2
 
 ### Frontend
-<t>Angular<t> using typescript.
+***Angular*** using typescript.\
 version: 16.2.0
 
 ## Developing
 
 ### Node.js
-version 18.17.1
+version: 18.17.1
 
 ### docker
 docker desktop for windows
@@ -24,8 +24,9 @@ docker desktop for windows
 `ng serve` in `./web`
 
 #### Express
- - `docker build . -t stregliste:latest` in `root`
- - `docker run -detached -p 4000:4000 stregliste:latest` in `root`
+`debug.cmd` in `/server`
+
+> For the backend to access "Google Cloud" services the [gcloud CLI](https://cloud.google.com/sdk/gcloud) must be set up with user credentials, [guid](https://cloud.google.com/docs/authentication/provide-credentials-adc#local-user-cred)   
 
 ### Deployment
 Using docker. Run "deploy.cmd" in root of project.
