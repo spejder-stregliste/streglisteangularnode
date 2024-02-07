@@ -12,6 +12,9 @@ version: 16.2.0
 
 ## Developing
 
+### Installation
+see `Contributing.md`
+
 ### Node.js
 version: 18.17.1
 
