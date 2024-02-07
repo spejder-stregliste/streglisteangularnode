@@ -1,6 +1,7 @@
 
 # compiled output
 /server/dist
+/server/web
 /web/dist
 
 # node
