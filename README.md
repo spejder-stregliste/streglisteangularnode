@@ -4,9 +4,11 @@ Website for klan sukkeregern stregliste.
 ## Tech stack
 ### Backend
 <t>express.js</t> using typescript.
+version: 4.18.2
 
 ### Frontend
-Angular CLI using typescript.
+<t>Angular<t> using typescript.
+version: 16.2.0
 
 ## Developing
 
