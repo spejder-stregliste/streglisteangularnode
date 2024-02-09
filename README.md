@@ -29,7 +29,7 @@ docker desktop for windows
 > The serve script will open for traffic on port 4200.
 
 #### Express
-`npm run debug` in `/server`. \
+`npm run debug` in `/server`. 
 
 When debugging is done it is advised to run `npm run close`.\
 This will attempt to shut down local instances of gcloud emulators which have not been exited.\
