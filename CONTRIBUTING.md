@@ -20,6 +20,11 @@ This guide is for setup on a windows machine.
 	- Navigate to the root of the the project folder. 
 		- run `npm install` in `./server`.
 		- run `npm install` in `./web`
+  	- Install angular CLI as global dependency
+   		- run `npm install -g @angular/cli`
+       	> The global installs of npm might not be in you Path environment variable!
+        > Make sure to add the global npm path to Environemnt Variable `Path`.
+        > To see installation paths run `npm list -g`
 6. **gcloud CLI**
 	- Download and install from [gcloud](https://cloud.google.com/sdk/gcloud#download_and_install_the). 
 	- Run `gcloud init` and follow instructions to setup authentication.
