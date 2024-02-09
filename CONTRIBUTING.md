@@ -25,6 +25,7 @@ This guide is for setup on a windows machine.
 	- Run `gcloud init` and follow instructions to setup authentication.
 7. **Firebase CLI**
 	- Run `npm install -g firebase-tools` to install the Firebase CLI.
+ 	> The emulators for firebase require a local java JDK of version 11 or higher  
 8. **Docker**
 	- Docker is *Linux* based, this step will require virtualization. It is recommended to use [WSL](https://learn.microsoft.com/en-us/windows/wsl/install) to install Linux on windows.
 	- Download and install from [Docker Desktop](https://www.docker.com/products/docker-desktop/).
