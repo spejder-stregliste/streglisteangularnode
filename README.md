@@ -12,6 +12,9 @@ version: 16.2.0
 
 ## Developing
 
+### Installation
+see [Contributing.md](https://github.com/spejder-stregliste/streglisteangularnode/blob/ad7aaa345c322840598c3b12cb0f41aee0385bc9/CONTRIBUTING.md)
+
 ### Node.js
 version: 18.17.1
 
