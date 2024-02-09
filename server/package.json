@@ -6,6 +6,8 @@
   "scripts": {
     "build": "node build.js",
     "start": "node dist/index.js",
+    "debug": "npm run close && debug.cmd",
+    "close": "kill-port --port 9098 && kill-port --port 4000",
     "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/index.js\""
   },
   "keywords": [],
@@ -21,6 +23,7 @@
     "@types/node": "^20.8.4",
     "concurrently": "^8.2.1",
     "esbuild": "^0.19.4",
+    "kill-port": "^2.0.1",
     "typescript": "^5.2.2"
   }
 }

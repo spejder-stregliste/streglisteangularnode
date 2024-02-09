@@ -23,10 +23,17 @@ docker desktop for windows
 #### Angular
 `ng serve` in `./web`
 
-#### Express
-`debug.cmd` in `/server`
+> The serve script will open for traffic on port 4200.
 
-> For the backend to access "Google Cloud" services the [gcloud CLI](https://cloud.google.com/sdk/gcloud) must be set up with user credentials, [guid](https://cloud.google.com/docs/authentication/provide-credentials-adc#local-user-cred)   
+#### Express
+`npm run debug` in `/server`.\
+
+When debugging is done it is advised to run `npm run close`.\
+This will attempt to shut down local instances of gcloud emulators which have not been exited.\
+\
+In local development the password for /admin page is "Troppen1".
+
+> The debug script will open for traffic on ports 4000, 9098 and 9099. 
 
 ### Deployment
 Using docker. Run "deploy.cmd" in root of project.

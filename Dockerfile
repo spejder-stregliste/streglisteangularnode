@@ -27,7 +27,11 @@ FROM base as build-server
 
 # copy server components
 WORKDIR /app
-COPY ./server/ /app
+COPY ./server/src/ /app/src
+COPY ./server/.env.production /app/.env
+COPY ./server/package.json /app
+COPY ./server/tsconfig.json /app
+COPY ./server/build.js /app
 
 # get server dependencies
 COPY --from=deps-server /app/node_modules/ /app/node_modules
@@ -66,7 +70,7 @@ COPY --from=build-web /web/dist/ /app/web
 
 # copy .env
 WORKDIR /app
-COPY ./server/.env /app/
+COPY ./server/.env.production /app/.env
 
 # create non root user
 RUN addgroup --system --gid 1001 nodejs 

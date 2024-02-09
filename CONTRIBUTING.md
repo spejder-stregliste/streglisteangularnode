@@ -23,7 +23,9 @@ This guide is for setup on a windows machine.
 6. **gcloud CLI**
 	- Download and install from [gcloud](https://cloud.google.com/sdk/gcloud#download_and_install_the). 
 	- Run `gcloud init` and follow instructions to setup authentication.
-7. **Docker**
+7. **Firebase CLI**
+	- Run `npm install -g firebase-tools` to install the Firebase CLI.
+8. **Docker**
 	- Docker is *Linux* based, this step will require virtualization. It is recommended to use [WSL](https://learn.microsoft.com/en-us/windows/wsl/install) to install Linux on windows.
 	- Download and install from [Docker Desktop](https://www.docker.com/products/docker-desktop/).
 	- Setup docker to push to [Google Storage Buckets](https://cloud.google.com/sdk/gcloud/reference/auth/configure-docker).
