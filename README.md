@@ -39,7 +39,7 @@ In local development the password for /admin page is "Troppen1".
 > The debug script will open for traffic on ports 4000, 9098 and 9099. 
 
 ### Deployment
-Using docker. Run "deploy.cmd" in root of project.
+Using docker. Run `deploy.cmd` in root of project.
 
 Docker must be locally configured to push to google storage buckets.
 [Setup docker](https://cloud.google.com/sdk/gcloud/reference/auth/configure-docker)
