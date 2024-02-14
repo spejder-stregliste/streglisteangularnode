@@ -36,14 +36,11 @@ export class UserService {
         user.lines = parseInt(user.lines?.toString() || "0");
         const res = await lastValueFrom(this.http.put<User>(this.baseurl + 'user', user), { defaultValue: undefined });
         if (res) {
-            const updated = this.users.value?.map(u => {
-                if (u.name === user.name) {
-                    u.lines = user.lines
-                }
-                return u
-            });
-            this.users.next(updated);
-            return { status: true, lines: res.lines };
+            const u = this.users.value?.find(u => u.name === user.name)
+            if (u) {
+                u.lines = user.lines;
+                return { status: true, lines: res.lines };
+            }
         }
         this.users.next(undefined);
         return { status: false };
@@ -73,4 +70,4 @@ export class User {
 
 function compare(a: User | undefined, b: User | undefined): number {
     return (a!.name! < b!.name! ? -1 : 1);
-  }
+}

@@ -21,17 +21,19 @@ export class AdminService {
 
     async autherize(secret: Secret): Promise<boolean> {
         const res = await lastValueFrom(this.http.post<AuthResponse>(this.baseurl + 'auth', secret), { defaultValue: undefined });
-        if (res) {
-            if (res?.status === "ok") {
+        switch (res?.status) {
+            case "ok": {
                 this.autherized.next(true);
                 return true
             }
-            if (res?.status === "failed") {
+            case "failed": {
                 this.autherized.next(false);
                 return true
             }
+            default: {
+                return false;
+            }
         }
-        return false;
     }
 }
 

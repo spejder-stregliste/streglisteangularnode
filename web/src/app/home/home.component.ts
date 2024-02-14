@@ -13,7 +13,6 @@ import { Sort } from '@angular/material/sort';
 })
 export class HomeComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['name', 'lines', 'amount', 'edit'];
-  value = 'Clear me';
   usersSorted: User[] = [];
   users: User[] = [];
   status: Status | undefined = { status: "loading" };
@@ -71,16 +70,17 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   update(user: User) {
     this.userService.updateUser(user).then(res => {
-      if (res.status && res?.lines !== undefined && res?.lines >= 40) {
-        this.dialog.open(DialogComponent, {
-          data: { name: user.name },
-        });
-      }
-      if (!res.status) {
-        window.alert("Kan ikke gemme");
+      if (res.status) {
+        user.editing = false;
+
+        if (res?.lines !== undefined && res?.lines >= 40) {
+          this.dialog.open(DialogComponent, {
+            data: { name: user.name },
+          });
+        }
       }
       else {
-        user.editing = false;
+        window.alert("Kan ikke gemme");
       }
     }, () => {
       window.alert("Kan ikke gemme");
@@ -134,9 +134,9 @@ export class HomeComponent implements OnInit, OnDestroy {
       const isAsc = this.sort!.direction === 'asc';
       switch (this.sort!.active) {
         case 'name':
-          return compare({first: a.name ?? "", second: a.lines ?? 0}, {first: b.name ?? "", second: b.lines ?? 0}, isAsc);
+          return compare({ first: a.name ?? "", second: a.lines ?? 0 }, { first: b.name ?? "", second: b.lines ?? 0 }, isAsc);
         case 'lines':
-          return compare({first: a.lines ?? 0, second: a.name ?? ""}, {first: b.lines ?? 0, second: b.name ?? ""}, isAsc);
+          return compare({ first: a.lines ?? 0, second: a.name ?? "" }, { first: b.lines ?? 0, second: b.name ?? "" }, isAsc);
         default:
           return 0;
       }
@@ -148,8 +148,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.sortData();
   }
 }
-
-
 
 function compare(a: { first: number | string, second: number | string }, b: { first: number | string, second: number | string }, isAsc: boolean) {
   if (a.first === b.first) {
