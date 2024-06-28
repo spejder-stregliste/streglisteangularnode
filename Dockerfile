@@ -48,7 +48,7 @@ WORKDIR /web
 COPY ./web/ /web
 
 # install web dependencies
-RUN npm install -g @angular/cli
+RUN npm install -g @angular/cli@16.2.0
 COPY --from=deps-web /web/node_modules /web/node_modules
 
 # build web compnents
