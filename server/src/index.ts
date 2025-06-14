@@ -120,8 +120,12 @@ app.post('/auth', async (req: Request, res: Response) => {
 })
 //#endregion
 
+app.get('*.*', (req: Request, res: Response) => {
+  res.sendFile(req.path, { root: 'web/browser' })
+})
+
 app.get('*', (req: Request, res: Response) => {
-  res.sendFile('/', { root: 'web/' });
+  res.sendFile('/', { root: 'web/browser' });
 })
 
 app.listen(port, () => {
