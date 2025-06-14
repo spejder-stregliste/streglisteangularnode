@@ -4,12 +4,21 @@ import { User, UserService } from '../services/user.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogComponent } from '../dialog/dialog.component';
 import { GlobalService, Status } from '../services/global.service';
-import { Sort } from '@angular/material/sort';
+import { Sort, MatSort, MatSortHeader } from '@angular/material/sort';
+import { RouterLink } from '@angular/router';
+import { NgStyle } from '@angular/common';
+import { MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
+import { MatMiniFabButton, MatButton } from '@angular/material/button';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css'],
+    selector: 'app-home',
+    templateUrl: './home.component.html',
+    styleUrls: ['./home.component.css'],
+    imports: [RouterLink, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatSortHeader, MatIcon, MatCellDef, MatCell, MatInput, FormsModule, NgStyle, MatMiniFabButton, MatButton, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFormField, MatLabel]
 })
 export class HomeComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['name', 'lines', 'amount', 'edit'];

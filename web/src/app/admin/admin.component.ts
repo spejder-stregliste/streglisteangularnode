@@ -2,11 +2,19 @@ import { Component, OnDestroy, OnInit } from "@angular/core";
 import { AdminService } from "../services/admin.service";
 import { Subscription } from "rxjs";
 import { GlobalService, Status } from "../services/global.service";
-import { FormControl } from "@angular/forms";
+
+import { MatFormField, MatLabel } from "@angular/material/form-field";
+import { MatInput } from "@angular/material/input";
+import { FormsModule } from "@angular/forms";
+import { MatButton } from "@angular/material/button";
+import { MatIcon } from "@angular/material/icon";
+import { MatSelect } from "@angular/material/select";
+import { MatOption } from "@angular/material/core";
 
 @Component({
     selector: 'app-admin',
     templateUrl: './admin.component.html',
+    imports: [MatFormField, MatLabel, MatInput, FormsModule, MatButton, MatIcon, MatSelect, MatOption]
 })
 export class AdminComponent implements OnInit, OnDestroy {
     public autherized: boolean = false;
@@ -19,7 +27,7 @@ export class AdminComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.$authSource = this.adminService.autherized.subscribe({
-            next: (r) => {
+            next: (r: boolean) => {
                 this.autherized = r;
             }
         })
