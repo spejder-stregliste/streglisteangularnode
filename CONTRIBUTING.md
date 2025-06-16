@@ -38,7 +38,7 @@ This guide is for setup on a windows machine.
 ## Developing
 
 ### Node.js
-version: 18.17.1
+version: 22.16.0
 
 ### docker
 docker desktop for windows
