@@ -1,0 +1,7 @@
+<div mat-dialog-content>
+    <p>Er du sikker på du vil fjerne "{{data.name}}"</p>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-button (click)="onClick(true)" mat-flat-button color="primary">JA</button>
+  <button mat-button (click)="onClick(false)" mat-flat-button color="accent">Nej</button>
+</div>

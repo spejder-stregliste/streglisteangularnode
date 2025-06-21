@@ -54,6 +54,14 @@ export class UserService {
         }
         return false;
     }
+
+    async deleteUser(user: User): Promise<boolean> {
+        const res = await lastValueFrom(this.http.delete<User>(this.baseurl + `user/${user.name}`), {defaultValue: undefined});
+        if (res) {
+            return await this.updateAll();
+        }
+        return false
+    }
 }
 
 export class User {

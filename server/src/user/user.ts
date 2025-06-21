@@ -14,7 +14,12 @@ export async function updateUser(user: User): Promise<User> {
 }
 
 export async function creatUser(user: User): Promise<User> {
-    await db.collection("users").doc(user.name!).set({"navn":user.name, "streger": user.lines});
+    await db.collection("users").doc(user.name!).set({ "navn": user.name, "streger": user.lines });
+    return user;
+}
+
+export async function deleteUser(user: User): Promise<User> {
+    await db.collection("users").doc(user.name!).delete();
     return user;
 }
 

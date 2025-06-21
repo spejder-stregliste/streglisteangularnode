@@ -1,29 +1,38 @@
 import { Component, OnDestroy, OnInit } from "@angular/core";
 import { AdminService } from "../services/admin.service";
 import { Subscription } from "rxjs";
-import { GlobalService, Status } from "../services/global.service";
-
-import { MatFormField, MatLabel } from "@angular/material/form-field";
-import { MatInput } from "@angular/material/input";
+import { GlobalService } from "../services/global.service";
+import { MatFormField } from "@angular/material/form-field";
+import { MatInput, MatLabel } from "@angular/material/input";
 import { FormsModule } from "@angular/forms";
 import { MatButton } from "@angular/material/button";
 import { MatIcon } from "@angular/material/icon";
 import { MatSelect } from "@angular/material/select";
 import { MatOption } from "@angular/material/core";
+import { User, UserService } from "../services/user.service";
+import { MatDialog } from "@angular/material/dialog";
+import { MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
+import { RouterLink } from "@angular/router";
+import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.component";
 
 @Component({
     selector: 'app-admin',
     templateUrl: './admin.component.html',
-    imports: [MatFormField, MatLabel, MatInput, FormsModule, MatButton, MatIcon, MatSelect, MatOption]
+    styleUrls: ['./admin.component.css'],
+    imports: [RouterLink, MatFormField, MatTable, MatInput, MatColumnDef, FormsModule, MatButton, MatIcon, MatSelect, MatOption, MatLabel, MatHeaderCellDef, MatCellDef, MatHeaderRow, MatHeaderRowDef, MatRowDef, MatCell, MatHeaderCell, MatRow]
 })
 export class AdminComponent implements OnInit, OnDestroy {
     public autherized: boolean = false;
     public password: string = "";
     public selected: "up" | "unavailable" = 'up';
+    public displayedColumns: string[] = ['name', 'edit'];
+    public users: User[] = [];
 
     private $authSource: Subscription | undefined;
+    private $dataSource: Subscription | undefined;
 
-    constructor(private adminService: AdminService, private globalService: GlobalService) { }
+
+    constructor(private adminService: AdminService, private globalService: GlobalService, private userService: UserService, private dialog: MatDialog) { }
 
     ngOnInit(): void {
         this.$authSource = this.adminService.autherized.subscribe({
@@ -31,11 +40,48 @@ export class AdminComponent implements OnInit, OnDestroy {
                 this.autherized = r;
             }
         })
+        this.$dataSource = this.userService.users.subscribe({
+            next: (r) => {
+                if (r) {
+                    this.users = r;
+                } else {
+                    this.users = [];
+                    window.alert("Kan ikke hente brugere");
+                }
+            }, error: () => {
+                window.alert("Kan ikke hente brugere");
+            }
+        });
     }
     ngOnDestroy(): void {
+        if (this.$dataSource != null) {
+            this.$dataSource.unsubscribe();
+        }
         if (this.$authSource != null) {
             this.$authSource.unsubscribe();
         }
+    }
+
+    delete(user: User) {
+        const res = this.dialog.open(ConfirmDialogComponent, {
+            data: { name: user.name },
+        });
+        res.afterClosed().subscribe((result: boolean) => {
+            if (result) {
+                this.userService.deleteUser(user).then(res => {
+                    if (!res) {
+                        window.Error("Kan ikke slette bruger");
+                        this.users = [];
+                    }
+                },
+                    () => {
+                        window.Error("Kan ikke slette bruger")
+                        this.users = [];
+                    }
+                );
+            }
+        })
+
     }
 
     async sendPassword(): Promise<void> {

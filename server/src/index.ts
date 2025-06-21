@@ -1,7 +1,7 @@
 import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
 
-import { getUsers, updateUser, creatUser } from './user/user';
+import { getUsers, updateUser, creatUser, deleteUser } from './user/user';
 import { getStatus, updateStatus } from './status/status';
 import { autherize } from './admin/admin';
 
@@ -68,6 +68,18 @@ app.post('/user', async (req: Request, res: Response) => {
   }
   catch (e) {
     res.status(500).end();
+  }
+})
+
+app.delete('/user/:slug', async (req: Request, res: Response) => {
+  const body = req.body;
+
+  try {
+    const data = await deleteUser({name: req.params.slug, lines: body['lines']})
+    res.send(data)
+  }
+  catch (e) {
+    res.status(500).end
   }
 })
 
@@ -172,7 +184,7 @@ function checkForStatus(body: any): string | null {
   }
 
   if (body['status'] !== 'up' && body['status'] !== 'unavailable') {
-    return "property 'status' skal være en 'up' eller 'unavailable'";
+    return "property 'status' skal være 'up' eller 'unavailable'";
   }
 
   return null;
