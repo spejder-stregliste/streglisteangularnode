@@ -1,4 +1,4 @@
-@if (!autherized) {
+@if (!autherized()) {
 <div>
   <div style="display:flex; flex-direction:column; justify-content:center; margin-bottom:5px;">
     <b style="text-align: center; margin-bottom: 5px; font-size: 180%">Indtast admin password</b>
@@ -20,7 +20,7 @@
   </div>
 </div>
 }
-@if (autherized) {
+@if (autherized()) {
 <div>
   <div style="display:flex; flex-direction:column; justify-content:center; margin-bottom:5px; width: 100%;">
     <b style="text-align: center; margin-bottom: 5px; font-size: 180%">Admin</b>
@@ -36,7 +36,7 @@
         <mat-icon>done</mat-icon>
       </button>
     </div>
-    <table mat-table [dataSource]="users" class="container mat-elevation-z8" style="width: 100%;">
+    <table mat-table [dataSource]="users()" class="container mat-elevation-z8" style="width: 100%;">
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef><mat-icon>account_circle</mat-icon> </th>
         <td mat-cell *matCellDef="let element" class="name"> {{element.name}} </td>

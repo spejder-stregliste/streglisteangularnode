@@ -4,6 +4,6 @@ require("esbuild").build({
     platform: 'node',
     bundle: true,
     minify: true,
-    target: "ES2022"
+    target: "node24",
 })
 .then(() => console.log("⚡ Done"))

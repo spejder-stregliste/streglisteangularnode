@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
+import { Inject, Injectable, WritableSignal, signal } from '@angular/core';
 import { BehaviorSubject, lastValueFrom } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
@@ -7,15 +7,15 @@ import { environment } from 'src/environments/environment';
     providedIn: 'root'
 })
 export class AdminService {
-    public autherized: BehaviorSubject<boolean>;
+    public autherized: WritableSignal<boolean>;
 
     constructor(private http: HttpClient,
         @Inject('BASE_URL') private baseurl: string) {
-        if (environment.production) {
-            this.autherized = new BehaviorSubject(false);
+        if (environment.production || environment.useApi) {
+            this.autherized = signal(false);
         } else {
             // use for local development
-            this.autherized = new BehaviorSubject(true);
+            this.autherized = signal(true);
         }
     }
 
@@ -23,11 +23,11 @@ export class AdminService {
         const res = await lastValueFrom(this.http.post<AuthResponse>(this.baseurl + 'auth', secret), { defaultValue: undefined });
         switch (res?.status) {
             case "ok": {
-                this.autherized.next(true);
+                this.autherized.set(true);
                 return true
             }
             case "failed": {
-                this.autherized.next(false);
+                this.autherized.set(false);
                 return true
             }
             default: {
