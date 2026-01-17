@@ -34,11 +34,14 @@ This guide is for setup on a windows machine.
 	- Docker is *Linux* based, this step will require virtualization. It is recommended to use [WSL](https://learn.microsoft.com/en-us/windows/wsl/install) to install Linux on windows.
 	- Download and install from [Docker Desktop](https://www.docker.com/products/docker-desktop/).
 	- Setup docker to push to [Google Storage Buckets](https://cloud.google.com/sdk/gcloud/reference/auth/configure-docker).
+9. **Powershell**
+	- Download and Install from [Powershell](https://learn.microsoft.com/en-us/powershell/scripting/install/install-powershell-on-windows?view=powershell-7.5)
+	- To run the powershell scripts execution-policies might have to be changed [execution-policies](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-7.5)
 
 ## Developing
 
 ### Node.js
-version: 22.16.0
+version: 24.13.0
 
 ### docker
 docker desktop for windows
@@ -62,7 +65,7 @@ In local development the password for /admin page is "Troppen1".
 
 
 ### Deployment
-Using docker. Run `deploy.cmd` in root of project.
+Using docker. Run `deploy.ps1` in root of project.
 
 Docker must be locally configured to push to google storage buckets.
 [Setup docker](https://cloud.google.com/sdk/gcloud/reference/auth/configure-docker)

@@ -6,9 +6,9 @@
   <b style="text-align: center; margin-bottom: 5px; font-size: 100%">Mobilepay: 9213EU</b>
 </div>
 
-@if (status !== undefined && status.status === 'up') {
+@if (status() !== undefined && status()!.status === 'up') {
 <div>
-  <table mat-table [dataSource]="usersSorted" matSort (matSortChange)="setSort($event)"
+  <table mat-table [dataSource]="datasource" matSort (matSortChange)="setSort($event)"
     class="container mat-elevation-z8" style="width: 100%;">
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef mat-sort-header="name"><mat-icon>account_circle</mat-icon> </th>
@@ -18,12 +18,12 @@
       <th mat-header-cell *matHeaderCellDef mat-sort-header="lines"> <b
           style="font-size: x-large; cursor: default;">#</b> </th>
       <td mat-cell *matCellDef="let element" class="streger">
-        @if (!element.editing) {
+        @if (!editingRows().has(element.name)) {
         <div>
           {{element.lines}}
         </div>
         }
-        @if (element.editing) {
+        @if (editingRows().has(element.name)) {
         <div>
           <input type="text" matInput [(ngModel)]="element.lines">
         </div>
@@ -33,13 +33,13 @@
     <ng-container matColumnDef="amount">
       <th mat-header-cell *matHeaderCellDef> <mat-icon> local_atm</mat-icon> </th>
       <td mat-cell *matCellDef="let element" class="amount">
-        @if (!element.editing) {
+        @if (!editingRows().has(element.name)) {
         <div
           [ngStyle]="{'color': (element.lines >= 40) ? 'red' : 'black', 'font-weight': (element.lines >= 40) ? 'bold' : 'normal'}">
           {{element.lines * 5}} kr.
         </div>
         }
-        @if (element.editing) {
+        @if (editingRows().has(element.name)) {
         <div>
           <div style="display:flex;">
             <button mat-mini-fab (click)="increment(element)"
@@ -59,12 +59,12 @@
     <ng-container matColumnDef="edit">
       <th mat-header-cell *matHeaderCellDef><mat-icon>touch_app</mat-icon></th>
       <td mat-cell *matCellDef="let element" class="button">
-        @if (!element.editing) {
-        <button mat-flat-button color="accent" (click)="toggleEdit(element)" style="display:flex; justify-content:end">
+        @if (!editingRows().has(element.name)) {
+        <button mat-flat-button color="accent" (click)="setEditing(element, true)" style="display:flex; justify-content:end">
           <mat-icon>edit</mat-icon>
         </button>
         }
-        @if (element.editing) {
+        @if (editingRows().has(element.name)) {
         <button mat-flat-button color="accent" (click)="update(element)" style="display:flex; justify-content:end">
           <mat-icon>save</mat-icon>
         </button>
@@ -75,19 +75,19 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
   <div style="display: flex; justify-content: space-evenly; margin-top: 20px; align-items: center;">
-    @if (!creating) {
+    @if (!creating()) {
     <button (click)="createUser()" mat-flat-button color="primary">
       <mat-icon>add</mat-icon>
       Homie
     </button>
     }
-    @if (creating) {
+    @if (creating()) {
     <mat-form-field appearance="fill">
       <mat-label>Navn</mat-label>
       <input matInput [(ngModel)]="newUser">
     </mat-form-field>
     }
-    @if (creating) {
+    @if (creating()) {
     <button (click)="sendNewUser()" mat-flat-button color="primary" style="display:flex; justify-content:end">
       <mat-icon>save</mat-icon>
     </button>
@@ -99,7 +99,7 @@
 </div>
 }
 
-@if (status !== undefined && status.status === 'unavailable') {
+@if (status() !== undefined && status()!.status === 'unavailable') {
 <div>
   <br>
   <br>

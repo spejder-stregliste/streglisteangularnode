@@ -5,11 +5,11 @@ Website for klan sukkeregern stregliste.
 
 ### Backend
 ***Express.js*** using typescript.\
-version: 4.18.2
+version: 5.0.6
 
 ### Frontend
 ***Angular*** using typescript.\
-version: 16.2.0
+version: 21.1.0
 
 ## Installation
 See [Contributing.md](/CONTRIBUTING.md)

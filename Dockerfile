@@ -1,5 +1,5 @@
 ############################################################ fetch node image #######################################################
-FROM node:22.16.0 as base
+FROM node:24.13.0 as base
 
 ############################################################ fetch server dependencies  ####################################################
 FROM base as deps-server
@@ -48,7 +48,7 @@ WORKDIR /web
 COPY ./web/ /web
 
 # install web dependencies
-RUN npm install -g @angular/cli@16.2.0
+RUN npm install -g @angular/cli@21.1.0
 COPY --from=deps-web /web/node_modules /web/node_modules
 
 # build web compnents

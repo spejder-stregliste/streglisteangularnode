@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from "@angular/core";
+import { Component, OnDestroy, OnInit, signal, WritableSignal } from "@angular/core";
 import { AdminService } from "../services/admin.service";
 import { Subscription } from "rxjs";
 import { GlobalService } from "../services/global.service";
@@ -21,44 +21,24 @@ import { ConfirmDialogComponent } from "../confirm-dialog/confirm-dialog.compone
     styleUrls: ['./admin.component.css'],
     imports: [RouterLink, MatFormField, MatTable, MatInput, MatColumnDef, FormsModule, MatButton, MatIcon, MatSelect, MatOption, MatLabel, MatHeaderCellDef, MatCellDef, MatHeaderRow, MatHeaderRowDef, MatRowDef, MatCell, MatHeaderCell, MatRow]
 })
-export class AdminComponent implements OnInit, OnDestroy {
-    public autherized: boolean = false;
+export class AdminComponent implements OnDestroy {
+    public autherized: WritableSignal<boolean> = signal(false);
     public password: string = "";
     public selected: "up" | "unavailable" = 'up';
     public displayedColumns: string[] = ['name', 'edit'];
-    public users: User[] = [];
+    public users: WritableSignal<User[]>;
 
-    private $authSource: Subscription | undefined;
     private $dataSource: Subscription | undefined;
 
 
-    constructor(private adminService: AdminService, private globalService: GlobalService, private userService: UserService, private dialog: MatDialog) { }
-
-    ngOnInit(): void {
-        this.$authSource = this.adminService.autherized.subscribe({
-            next: (r: boolean) => {
-                this.autherized = r;
-            }
-        })
-        this.$dataSource = this.userService.users.subscribe({
-            next: (r) => {
-                if (r) {
-                    this.users = r;
-                } else {
-                    this.users = [];
-                    window.alert("Kan ikke hente brugere");
-                }
-            }, error: () => {
-                window.alert("Kan ikke hente brugere");
-            }
-        });
+    constructor(private adminService: AdminService, private globalService: GlobalService, private userService: UserService, private dialog: MatDialog) {
+        this.users = this.userService.users;
+        this.autherized = this.adminService.autherized;
     }
+
     ngOnDestroy(): void {
         if (this.$dataSource != null) {
             this.$dataSource.unsubscribe();
-        }
-        if (this.$authSource != null) {
-            this.$authSource.unsubscribe();
         }
     }
 
@@ -71,12 +51,12 @@ export class AdminComponent implements OnInit, OnDestroy {
                 this.userService.deleteUser(user).then(res => {
                     if (!res) {
                         window.Error("Kan ikke slette bruger");
-                        this.users = [];
+                        this.users.set([]);
                     }
                 },
                     () => {
                         window.Error("Kan ikke slette bruger")
-                        this.users = [];
+                        this.users.set([]);
                     }
                 );
             }

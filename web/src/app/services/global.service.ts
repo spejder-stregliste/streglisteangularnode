@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
+import { Inject, Injectable, signal, Signal, WritableSignal } from '@angular/core';
 import { BehaviorSubject, lastValueFrom } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
@@ -7,23 +7,23 @@ import { environment } from 'src/environments/environment';
     providedIn: 'root'
 })
 export class GlobalService {
-    public status: BehaviorSubject<Status | undefined>;
+    public status: WritableSignal<Status>;
 
     constructor(private http: HttpClient,
         @Inject('BASE_URL') private baseurl: string) {
-        if (environment.production) {
-            this.status = new BehaviorSubject<Status | undefined>({ status: "loading" });
+        if (environment.production || environment.useApi) {
+            this.status = signal({ status: "loading" });
             this.getStatus().then(() => {/* We do nothing */ });
         } else {
             // use for local development
-            this.status = new BehaviorSubject<Status | undefined>({ status: "up" })
+            this.status = signal({ status: "up" })
         }
     }
 
     async getStatus(): Promise<boolean> {
         const res = await lastValueFrom(this.http.get<Status>(this.baseurl + 'status'), { defaultValue: undefined });
         if (res) {
-            this.status.next(res);
+            this.status.set(res);
             return true;
         }
         return false;
@@ -32,7 +32,7 @@ export class GlobalService {
     async updateStatus(status: Status): Promise<boolean> {
         const res = await lastValueFrom(this.http.put<Status>(this.baseurl + 'status', status), { defaultValue: undefined });
         if (res) {
-            this.status.next(res);
+            this.status.set(res);
             return true;
         }
         return false;

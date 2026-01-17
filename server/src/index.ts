@@ -72,10 +72,16 @@ app.post('/user', async (req: Request, res: Response) => {
 })
 
 app.delete('/user/:slug', async (req: Request, res: Response) => {
-  const body = req.body;
+  const slug = req.params.slug
 
+  const check = checkSlug(slug);
+  if (check) {
+    res.statusMessage = check;
+    res.status(400).end();
+    return;
+  }
   try {
-    const data = await deleteUser({name: req.params.slug, lines: body['lines']})
+    const data = await deleteUser({name: slug as string, lines: 0})
     res.send(data)
   }
   catch (e) {
@@ -132,12 +138,8 @@ app.post('/auth', async (req: Request, res: Response) => {
 })
 //#endregion
 
-app.get('*.*', (req: Request, res: Response) => {
+app.get('/{*splat}', (req: Request, res: Response) => {
   res.sendFile(req.path, { root: 'web/browser' })
-})
-
-app.get('*', (req: Request, res: Response) => {
-  res.sendFile('/', { root: 'web/browser' });
 })
 
 app.listen(port, () => {
@@ -168,6 +170,14 @@ function checkForUser(body: any): string | null {
   }
 
   return null;
+}
+
+function checkSlug(slug: string | string[]): string | null {
+  if (typeof(slug) === "object") {
+    return "Et URL parameter forventet"
+  }
+
+  return null
 }
 
 function checkForStatus(body: any): string | null {

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, effect, OnDestroy, OnInit, signal, WritableSignal } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { User, UserService } from '../services/user.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -7,7 +7,7 @@ import { GlobalService, Status } from '../services/global.service';
 import { Sort, MatSort, MatSortHeader } from '@angular/material/sort';
 import { RouterLink } from '@angular/router';
 import { NgStyle } from '@angular/common';
-import { MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
+import { MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatTableDataSource } from '@angular/material/table';
 import { MatIcon } from '@angular/material/icon';
 import { MatInput } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
@@ -15,73 +15,40 @@ import { MatMiniFabButton, MatButton } from '@angular/material/button';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 
 @Component({
-    selector: 'app-home',
-    templateUrl: './home.component.html',
-    styleUrls: ['./home.component.css'],
-    imports: [RouterLink, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatSortHeader, MatIcon, MatCellDef, MatCell, MatInput, FormsModule, NgStyle, MatMiniFabButton, MatButton, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFormField, MatLabel]
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css'],
+  imports: [RouterLink, MatTable, MatSort, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatSortHeader, MatIcon, MatCellDef, MatCell, MatInput, FormsModule, NgStyle, MatMiniFabButton, MatButton, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFormField, MatLabel]
 })
-export class HomeComponent implements OnInit, OnDestroy {
-  displayedColumns: string[] = ['name', 'lines', 'amount', 'edit'];
-  usersSorted: User[] = [];
-  users: User[] = [];
-  status: Status | undefined = { status: "loading" };
-  creating: boolean = false;
+export class HomeComponent {
+  readonly displayedColumns: string[] = ['name', 'lines', 'amount', 'edit'];
+  readonly datasource: MatTableDataSource<User> = new MatTableDataSource();
+  readonly users: WritableSignal<User[]>;
+  readonly status: WritableSignal<Status> = signal({ status: "loading" });
+  readonly creating: WritableSignal<boolean> = signal(false);
+  readonly editingRows: WritableSignal<Set<string>> = signal(new Set())
   newUser: string = "";
-  private sort: Sort | undefined;
-  private $dataSource: Subscription | undefined;
-  private $statusSource: Subscription | undefined;
+  private sort: WritableSignal<Sort | undefined> = signal(undefined);
 
-  constructor(private userService: UserService, public dialog: MatDialog, private globalService: GlobalService) { }
+  constructor(private userService: UserService, public dialog: MatDialog, private globalService: GlobalService) {
+    this.users = userService.users;
+    effect(() => this.users.update(users => this.sortData(users, this.sort())));
+    this.status = this.globalService.status
+    effect(() => this.datasource.data = this.users());
+  }
 
-  ngOnInit(): void {
-    this.$dataSource = this.userService.users.subscribe({
-      next: (r) => {
-        if (r) {
-          this.users = r;
-          this.sortData();
-        } else {
-          this.users = [];
-          this.sortData();
-          window.alert("Kan ikke hente brugere");
-        }
-      }, error: () => {
-        window.alert("Kan ikke hente brugere");
-      }
-    });
-    this.$statusSource = this.globalService.status.subscribe({
-      next: (r) => {
-        if (r) {
-          this.status = r;
-        }
-        else {
-          this.status = undefined;
-          window.alert("Kan ikke hente status på applikation");
-        }
-      },
-      error: () => {
-        window.alert("Kan ikke hente status på applikation");
-      }
+  setEditing(user: User, editing: boolean) {
+    this.editingRows.update(s => {
+      const set = new Set(s)
+      editing ? set.add(user.name!) : set.delete(user.name!);
+      return set
     })
-  }
-
-  ngOnDestroy(): void {
-    if (this.$dataSource != null) {
-      this.$dataSource.unsubscribe();
-    }
-    if (this.$statusSource != null) {
-      this.$statusSource.unsubscribe();
-    }
-  }
-
-  toggleEdit(user: User) {
-    user.editing = true;
   }
 
   update(user: User) {
     this.userService.updateUser(user).then(res => {
       if (res.status) {
-        user.editing = false;
-
+        this.setEditing(user, false);
         if (res?.lines !== undefined && res?.lines >= 40) {
           this.dialog.open(DialogComponent, {
             data: { name: user.name },
@@ -95,53 +62,49 @@ export class HomeComponent implements OnInit, OnDestroy {
       window.alert("Kan ikke gemme");
       this.userService.updateAll().then(() => {
       }, () => {
-        this.users = [];
-        this.sortData();
+        this.users.set([]);
       });
     })
   }
 
   increment(user: User) {
-    user.lines!++;
+    this.userService.increment(user)
   }
 
   decrement(user: User) {
-    user.lines!--;
+    this.userService.decrement(user)
   }
 
   createUser() {
-    this.creating = true;
+    this.creating.set(true);
   }
 
   sendNewUser() {
     if (this.newUser == null || this.newUser.length < 1) {
       return;
     }
-    this.creating = false;
+    this.creating.set(false);
     this.userService.addUser(new User(this.newUser, 0)).then(res => {
       if (!res) {
         window.Error("Kan ikke oprette bruger");
-        this.users = [];
-        this.sortData();
+        this.users.set([]);
       }
     }, () => {
       window.Error("Kan ikke oprette bruger");
-      this.users = [];
-      this.sortData();
+      this.users.set([]);
     })
     this.newUser = ""
   }
 
-  sortData() {
-    const data = [...this.users];
-    if (!this.sort || !this.sort.active || this.sort.direction === '') {
-      this.usersSorted = data;
-      return;
+  sortData(users: User[], sort: Sort | undefined) {
+    const data = [...users];
+    if (!sort || !sort.active || sort.direction === '') {
+      return data;
     }
 
-    this.usersSorted = data.sort((a, b) => {
-      const isAsc = this.sort!.direction === 'asc';
-      switch (this.sort!.active) {
+    return data.sort((a, b) => {
+      const isAsc = sort!.direction === 'asc';
+      switch (sort!.active) {
         case 'name':
           return compare({ first: a.name ?? "", second: a.lines ?? 0 }, { first: b.name ?? "", second: b.lines ?? 0 }, isAsc);
         case 'lines':
@@ -153,8 +116,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   setSort(sort: Sort) {
-    this.sort = sort;
-    this.sortData();
+    this.sort.set(sort);
   }
 }
 
