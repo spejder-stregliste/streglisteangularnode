@@ -1,7 +1,39 @@
-.mat-column-lines {
-     width: 90px;
-  }
+.fade-in {
+  animation: fadeIn 250ms ease-out forwards;
+}
 
-.mat-column-amount {
-    width: 100px;
+.fade-out {
+  animation: fadeOut 150ms ease-in forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+.pulse {
+  animation: pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0% {
+    background-color: #e5e7eb;
+  }
+  50% {
+    background-color: #f3f4f6;
+  }
+  100% {
+    background-color: #e5e7eb;
+  }
 }
