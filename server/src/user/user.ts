@@ -23,7 +23,7 @@ export async function deleteUser(user: User): Promise<User> {
     return user;
 }
 
-export class User {
+export type User = {
     name?: string;
     lines?: number;
 }

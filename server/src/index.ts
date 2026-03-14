@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import { getUsers, updateUser, creatUser, deleteUser } from './user/user';
 import { getStatus, updateStatus } from './status/status';
 import { autherize } from './admin/admin';
+import { createJWS, verifyJWS } from './auth/auth'
 
 dotenv.config();
 
@@ -73,6 +74,16 @@ app.post('/user', async (req: Request, res: Response) => {
 
 app.delete('/user/:slug', async (req: Request, res: Response) => {
   const slug = req.params.slug
+  const authHeader = req.headers.authorization
+
+  if (authHeader === undefined || authHeader === null || authHeader === "") {
+    res.status(401).end()
+    return;
+  }
+  if ((await verifyJWS(authHeader)).status === "failed") {
+    res.status(403).end()
+    return;
+  }
 
   const check = checkSlug(slug);
   if (check) {
@@ -101,6 +112,16 @@ app.get('/status', async (req: Request, res: Response) => {
 
 app.put('/status', async (req: Request, res: Response) => {
   const body = req.body;
+  const authHeader = req.headers.authorization
+
+  if (authHeader === undefined || authHeader === null || authHeader === "") {
+    res.status(401).end()
+    return;
+  }
+  if ((await verifyJWS(authHeader)).status === "failed") {
+    res.status(403).end()
+    return;
+  }
 
   const check = checkForStatus(body);
   if (check) {
@@ -130,6 +151,14 @@ app.post('/auth', async (req: Request, res: Response) => {
 
   try {
     const data = await autherize({ secret: body['secret'] })
+    if (data.status === 'ok') {
+      const jwsResponse = await createJWS()
+      if (jwsResponse.status === 'failed') {
+        res.status(500).end();
+        return
+      }
+      res.setHeader('Authorization', `Bearer ${jwsResponse.jwsToken}`)
+    }
     res.send(data);
   }
   catch (e) {
@@ -139,6 +168,7 @@ app.post('/auth', async (req: Request, res: Response) => {
 //#endregion
 
 app.get('/{*splat}', (req: Request, res: Response) => {
+  req.path
   res.sendFile(req.path, { root: 'web/browser' })
 })
 

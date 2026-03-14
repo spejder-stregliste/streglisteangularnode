@@ -6,10 +6,10 @@ export async function autherize(secret: Secret): Promise<AuthResponse> {
     return {status: secret.secret === data?.secret ? "ok" : "failed"};
 }
 
-export class AuthResponse {
+export type AuthResponse = {
     status: "failed" | "ok" | undefined
 }
 
-export class Secret {
+export type Secret = {
     secret: string | undefined;
 }

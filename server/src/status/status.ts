@@ -11,6 +11,6 @@ export async function updateStatus(status: Status): Promise<Status> {
     return status;
 }
 
-export class Status {
+export type Status = {
     status?: "up" | "unavailable";
 }
